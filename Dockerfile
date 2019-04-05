@@ -1,19 +1,17 @@
-# Go envs
-FROM golang:alpine AS dev
-RUN apk add --update --no-cache git curl
-RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-ENV APP_HOME $GOPATH/src/github.com/cloud104/tks-uptimerobot-controller
-WORKDIR $APP_HOME
-COPY .kube/config Gopkg.toml Gopkg.lock ./
-RUN dep ensure -vendor-only
-RUN ls $APP_HOME
-VOLUME ["$APP_HOME"]
-# Builder
-FROM dev AS builder
-COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o /entrypoint *.go
+# Build the manager binary
+FROM golang:alpine as builder
 
-# Prod
-FROM drone/ca-certs
-COPY --from=builder /entrypoint /usr/local/bin/entrypoint
-ENTRYPOINT ["entrypoint"]
+# Copy in the go src
+WORKDIR /go/src/github.com/cloud104/tks-uptimerobot-controller
+COPY pkg/    pkg/
+COPY cmd/    cmd/
+COPY vendor/ vendor/
+
+# Build
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager github.com/cloud104/tks-uptimerobot-controller/cmd/manager
+
+# Copy the controller-manager into a thin image
+FROM drone/ca-certs 
+WORKDIR /
+COPY --from=builder /go/src/github.com/cloud104/tks-uptimerobot-controller/manager .
+ENTRYPOINT ["/manager"]

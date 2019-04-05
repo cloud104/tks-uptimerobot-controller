@@ -1,0 +1,3 @@
+version: "1"
+domain: tks.sh
+repo: github.com/cloud104/tks-uptimerobot-controller
