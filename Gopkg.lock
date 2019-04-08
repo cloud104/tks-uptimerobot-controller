@@ -26,6 +26,14 @@
   revision = "3a771d992973f24aa725d07868b467d1ddfceafb"
 
 [[projects]]
+  branch = "master"
+  digest = "1:a2fcb89304689b3fc33a598078e3ad464181a12b88f3667926d5089d2178b99b"
+  name = "github.com/cloud104/uptimerobot-api"
+  packages = ["pkg/api"]
+  pruneopts = "T"
+  revision = "d46b705f20ce5ed5d2d189461dad04381a763ad8"
+
+[[projects]]
   digest = "1:9f42202ac457c462ad8bb9642806d275af9ab4850cf0b1960b9c6f083d4a309a"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
@@ -86,6 +94,14 @@
   pruneopts = "T"
   revision = "ba06b47c162d49f2af050fb4c75bcbc86a159d5c"
   version = "v1.2.1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:1ba1d79f2810270045c328ae5d674321db34e3aae468eb4233883b473c5c0467"
+  name = "github.com/golang/glog"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "23def4e6c14b4da8ac2ed8007337bc5eb5007998"
 
 [[projects]]
   branch = "master"
@@ -214,12 +230,36 @@
   version = "v1.1.6"
 
 [[projects]]
+  digest = "1:86c75d55fde56a814f69515d092963634d6f5f6bc1c3e9091b01fbe373a9546e"
+  name = "github.com/k0kubun/pp"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "3d73dea227e0711e38b911ffa6fbafc8ff6b2991"
+  version = "v3.0.1"
+
+[[projects]]
   digest = "1:3804a3a02964db8e6db3e5e7960ac1c1a9b12835642dd4f4ac4e56c749ec73eb"
   name = "github.com/markbates/inflect"
   packages = ["."]
   pruneopts = "T"
   revision = "24b83195037b3bc61fcda2d28b7b0518bce293b6"
   version = "v1.0.4"
+
+[[projects]]
+  digest = "1:8b841c5eeb0db3748e16fef3e167073dd5433daac53d9da2201c997eea46e83e"
+  name = "github.com/mattn/go-colorable"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "3a70a971f94a22f2fa562ffcc7a0eb45f5daf045"
+  version = "v0.1.1"
+
+[[projects]]
+  digest = "1:e150b5fafbd7607e2d638e4e5cf43aa4100124e5593385147b0a74e2733d8b0d"
+  name = "github.com/mattn/go-isatty"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "c2a7a6ca930a4cd0bc33a3f298eb71960732a3a7"
+  version = "v0.0.7"
 
 [[projects]]
   digest = "1:a8e3d14801bed585908d130ebfc3b925ba642208e6f30d879437ddfc7bb9b413"
@@ -405,6 +445,14 @@
   pruneopts = "T"
   revision = "298182f68c66c05229eb03ac171abe6e309ee79a"
   version = "v1.0.3"
+
+[[projects]]
+  branch = "master"
+  digest = "1:ca3198a593b471a287c650a5f5f837b0bbcfa6d858804958976330089d2b5f12"
+  name = "github.com/vishalkuo/bimap"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "09cff281464521368a6976f06c75e4ee9745ab7c"
 
 [[projects]]
   digest = "1:365b8ecb35a5faf5aa0ee8d798548fc9cd4200cb95d77a5b0b285ac881bae499"
@@ -851,6 +899,7 @@
     "pkg/client/apiutil",
     "pkg/client/config",
     "pkg/controller",
+    "pkg/controller/controllerutil",
     "pkg/envtest",
     "pkg/envtest/printer",
     "pkg/event",
@@ -867,6 +916,7 @@
     "pkg/recorder",
     "pkg/runtime/inject",
     "pkg/runtime/log",
+    "pkg/runtime/scheme",
     "pkg/runtime/signals",
     "pkg/source",
     "pkg/source/internal",
@@ -927,7 +977,9 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/cloud104/uptimerobot-api/pkg/api",
     "github.com/emicklei/go-restful",
+    "github.com/k0kubun/pp",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
     "golang.org/x/net/context",
@@ -937,6 +989,7 @@
     "k8s.io/apimachinery/pkg/api/errors",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
     "k8s.io/apimachinery/pkg/runtime",
+    "k8s.io/apimachinery/pkg/runtime/schema",
     "k8s.io/apimachinery/pkg/types",
     "k8s.io/client-go/kubernetes/scheme",
     "k8s.io/client-go/plugin/pkg/client/auth/gcp",
@@ -946,11 +999,13 @@
     "sigs.k8s.io/controller-runtime/pkg/client",
     "sigs.k8s.io/controller-runtime/pkg/client/config",
     "sigs.k8s.io/controller-runtime/pkg/controller",
+    "sigs.k8s.io/controller-runtime/pkg/controller/controllerutil",
     "sigs.k8s.io/controller-runtime/pkg/envtest",
     "sigs.k8s.io/controller-runtime/pkg/handler",
     "sigs.k8s.io/controller-runtime/pkg/manager",
     "sigs.k8s.io/controller-runtime/pkg/reconcile",
     "sigs.k8s.io/controller-runtime/pkg/runtime/log",
+    "sigs.k8s.io/controller-runtime/pkg/runtime/scheme",
     "sigs.k8s.io/controller-runtime/pkg/runtime/signals",
     "sigs.k8s.io/controller-runtime/pkg/source",
     "sigs.k8s.io/controller-tools/cmd/controller-gen",

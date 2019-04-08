@@ -17,10 +17,9 @@ package uptimerobot
 
 import (
 	"context"
-	"fmt"
-	"time"
 
-	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
+	monitorsv1 "github.com/cloud104/tks-uptimerobot-controller/pkg/apis/monitors/v1"
+	"github.com/k0kubun/pp"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -28,8 +27,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 )
+
+var log = logf.Log.WithName("controller")
 
 /**
 * USER ACTION REQUIRED: This is a scaffold file intended for the user to modify with their own Controller
@@ -50,18 +52,13 @@ func newReconciler(mgr manager.Manager) reconcile.Reconciler {
 // add adds a new Controller to mgr with r as the reconcile.Reconciler
 func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	// Create a new controller
-	c, err := controller.New(
-		"uptimerobot-controller",
-		mgr,
-		controller.Options{Reconciler: r})
+	c, err := controller.New("uptimerobot-controller", mgr, controller.Options{Reconciler: r})
 	if err != nil {
 		return err
 	}
 
 	// Watch for changes to UptimeRobot
-	err = c.Watch(
-		&source.Kind{Type: &extensionsv1beta1.Ingress{}},
-		&handler.EnqueueRequestForObject{})
+	err = c.Watch(&source.Kind{Type: &monitorsv1.UptimeRobot{}}, &handler.EnqueueRequestForObject{})
 	if err != nil {
 		return err
 	}
@@ -79,11 +76,17 @@ type ReconcileUptimeRobot struct {
 
 // Reconcile reads that state of the cluster for a UptimeRobot object and makes changes based on the state read
 // and what is in the UptimeRobot.Spec
-// +kubebuilder:rbac:groups=extensions,resources=ingresses,verbs=get;list;watch
-// +kubebuilder:rbac:groups=extensions,resources=ingresses/status,verbs=get
+// TODO(user): Modify this Reconcile function to implement your Controller logic.  The scaffolding writes
+// a Deployment as an example
+// Automatically generate RBAC rules to allow the Controller to read and write Deployments
+// +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=apps,resources=deployments/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=monitors.tks.sh,resources=uptimerobots,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=monitors.tks.sh,resources=uptimerobots/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=apps,resources=secrets,verbs=get
 func (r *ReconcileUptimeRobot) Reconcile(request reconcile.Request) (reconcile.Result, error) {
 	// Fetch the UptimeRobot instance
-	instance := &extensionsv1beta1.Ingress{}
+	instance := &monitorsv1.UptimeRobot{}
 	err := r.Get(context.TODO(), request.NamespacedName, instance)
 	if err != nil {
 		if errors.IsNotFound(err) {
@@ -96,10 +99,16 @@ func (r *ReconcileUptimeRobot) Reconcile(request reconcile.Request) (reconcile.R
 	}
 
 	// @TODO: Invoke someone here to post to a external source that can be queryed
-	fmt.Printf("%v\n", instance.Name)
-	fmt.Printf("%v\n", instance.ObjectMeta)
+	pp.Println(instance)
 
-	time.Sleep(5 * time.Second)
+	// @TODO: Where to put this
+	// httpClient := &http.Client{}
+	// client := uptimerobot.NewClient("yourAPIKeyHere", httpClient)
+	// resp, err := client.GetMonitors()
+	// if err != nil {
+	// 	return reconcile.Result{}, err
+	// }
+	// pp.Println(resp)
 
 	return reconcile.Result{}, nil
 }
