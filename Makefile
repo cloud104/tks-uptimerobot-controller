@@ -1,5 +1,5 @@
 # Image URL to use all building/pushing image targets
-IMG ?= cloud104/uptimerobot-controller:latest
+IMG ?= cloud104/uptimerobot-controller
 
 all: test manager
 
@@ -17,8 +17,11 @@ run: generate fmt vet
 
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 deploy: manifests
-	kubectl apply -f config/crds
-	kustomize build config/default | kubectl apply -f -
+	kustomize build ./config | kubectl apply -f -
+
+# Deploy controller in the configured Kubernetes cluster in ~/.kube/config
+delete:
+	kustomize build ./config | kubectl delete -f -
 
 # Generate manifests e.g. CRD, RBAC etc.
 manifests:
@@ -43,7 +46,6 @@ endif
 docker-build: test
 	docker build . -t ${IMG}
 	@echo "updating kustomize image patch file for manager resource"
-	sed -i'' -e 's@image: .*@image: '"${IMG}"'@' ./config/default/manager_image_patch.yaml
 
 # Push the docker image
 docker-push:

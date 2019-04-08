@@ -8,3 +8,4 @@
 ## TODO
 
 - Figure out the the queue stuff
+- Make tests run on docker

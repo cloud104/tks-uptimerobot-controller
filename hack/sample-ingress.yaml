@@ -1,12 +1,48 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: uptimerobot.tks.sh 
+  name: uptimerobot-01.tks.sh 
   annotations:
     uptimerobot.tks.sh/watch: 'true'
 spec:
   rules:
-  - host: uptimerobot.tks.sh
+  - host: uptimerobot-01.tks.sh
+    http:
+      paths:
+      - backend:
+          serviceName: nope 
+          servicePort: 8000
+        path: /
+status:
+  loadBalancer: {}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: uptimerobot-02.tks.sh 
+  annotations:
+    uptimerobot.tks.sh/watch: 'true'
+spec:
+  rules:
+  - host: uptimerobot-02.tks.sh
+    http:
+      paths:
+      - backend:
+          serviceName: nope 
+          servicePort: 8000
+        path: /
+status:
+  loadBalancer: {}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: uptimerobot-03.tks.sh 
+  annotations:
+    uptimerobot.tks.sh/watch: 'true'
+spec:
+  rules:
+  - host: uptimerobot-03.tks.sh
     http:
       paths:
       - backend:

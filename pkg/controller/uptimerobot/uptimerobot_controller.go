@@ -18,6 +18,7 @@ package uptimerobot
 import (
 	"context"
 	"fmt"
+	"time"
 
 	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -49,13 +50,18 @@ func newReconciler(mgr manager.Manager) reconcile.Reconciler {
 // add adds a new Controller to mgr with r as the reconcile.Reconciler
 func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	// Create a new controller
-	c, err := controller.New("uptimerobot-controller", mgr, controller.Options{Reconciler: r})
+	c, err := controller.New(
+		"uptimerobot-controller",
+		mgr,
+		controller.Options{Reconciler: r})
 	if err != nil {
 		return err
 	}
 
 	// Watch for changes to UptimeRobot
-	err = c.Watch(&source.Kind{Type: &extensionsv1beta1.Ingress{}}, &handler.EnqueueRequestForObject{})
+	err = c.Watch(
+		&source.Kind{Type: &extensionsv1beta1.Ingress{}},
+		&handler.EnqueueRequestForObject{})
 	if err != nil {
 		return err
 	}
@@ -92,6 +98,8 @@ func (r *ReconcileUptimeRobot) Reconcile(request reconcile.Request) (reconcile.R
 	// @TODO: Invoke someone here to post to a external source that can be queryed
 	fmt.Printf("%v\n", instance.Name)
 	fmt.Printf("%v\n", instance.ObjectMeta)
+
+	time.Sleep(5 * time.Second)
 
 	return reconcile.Result{}, nil
 }
