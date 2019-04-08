@@ -16,13 +16,14 @@ limitations under the License.
 package main
 
 import (
-	"flag"
 	"os"
 
+	"github.com/cloud104/tks-uptimerobot-controller/cmd/options"
 	"github.com/cloud104/tks-uptimerobot-controller/pkg/apis"
 	"github.com/cloud104/tks-uptimerobot-controller/pkg/controller"
 	"github.com/cloud104/tks-uptimerobot-controller/pkg/webhook"
 	"github.com/k0kubun/pp"
+	"github.com/spf13/cobra"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
@@ -30,17 +31,31 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/runtime/signals"
 )
 
-var (
-	metricsAddr    string
-	uptimeRobotKey string
-)
+func newOperatorCmd() *cobra.Command {
+	var operatorCmd = &cobra.Command{
+		Use:   "operator",
+		Short: "Start the uptime robot operator.",
+		Long:  `operator is for starting the uptime robot operator. It is meant to run as a standalone binary.`,
+		Run:   startOperator,
+	}
+	options.GetControllerOptions().AddFlags(operatorCmd)
 
-func main() {
-	flag.StringVar(&metricsAddr, "metrics-addr", ":8080", "The address the metric endpoint binds to.")
-	flag.StringVar(&uptimeRobotKey, "uptime-robot-key", "", "The key to access uptime robot")
-	flag.Parse()
+	return operatorCmd
+}
+
+func startOperator(cmd *cobra.Command, args []string) {
+	// Start logger
 	logf.SetLogger(logf.ZapLogger(false))
 	log := logf.Log.WithName("entrypoint")
+
+	// Validate the cmd flags
+	opts := options.GetControllerOptions()
+	if err := opts.Validate(); err != nil {
+		log.Error(err, "unable to set up client config")
+		os.Exit(1)
+	}
+	log.Info("Operator started with options", opts)
+	pp.Println(opts)
 
 	// Get a config to talk to the apiserver
 	log.Info("setting up client for manager")
@@ -50,11 +65,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	pp.Println(cfg)
-
 	// Create a new Cmd to provide shared dependencies and start components
 	log.Info("setting up manager")
-	mgr, err := manager.New(cfg, manager.Options{MetricsBindAddress: metricsAddr})
+	mgr, err := manager.New(cfg, manager.Options{MetricsBindAddress: opts.MetricsAddr})
 	if err != nil {
 		log.Error(err, "unable to set up overall controller manager")
 		os.Exit(1)

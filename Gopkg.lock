@@ -26,14 +26,6 @@
   revision = "3a771d992973f24aa725d07868b467d1ddfceafb"
 
 [[projects]]
-  branch = "master"
-  digest = "1:a2fcb89304689b3fc33a598078e3ad464181a12b88f3667926d5089d2178b99b"
-  name = "github.com/cloud104/uptimerobot-api"
-  packages = ["pkg/api"]
-  pruneopts = "T"
-  revision = "d46b705f20ce5ed5d2d189461dad04381a763ad8"
-
-[[projects]]
   digest = "1:9f42202ac457c462ad8bb9642806d275af9ab4850cf0b1960b9c6f083d4a309a"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
@@ -94,14 +86,6 @@
   pruneopts = "T"
   revision = "ba06b47c162d49f2af050fb4c75bcbc86a159d5c"
   version = "v1.2.1"
-
-[[projects]]
-  branch = "master"
-  digest = "1:1ba1d79f2810270045c328ae5d674321db34e3aae468eb4233883b473c5c0467"
-  name = "github.com/golang/glog"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "23def4e6c14b4da8ac2ed8007337bc5eb5007998"
 
 [[projects]]
   branch = "master"
@@ -445,14 +429,6 @@
   pruneopts = "T"
   revision = "298182f68c66c05229eb03ac171abe6e309ee79a"
   version = "v1.0.3"
-
-[[projects]]
-  branch = "master"
-  digest = "1:ca3198a593b471a287c650a5f5f837b0bbcfa6d858804958976330089d2b5f12"
-  name = "github.com/vishalkuo/bimap"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "09cff281464521368a6976f06c75e4ee9745ab7c"
 
 [[projects]]
   digest = "1:365b8ecb35a5faf5aa0ee8d798548fc9cd4200cb95d77a5b0b285ac881bae499"
@@ -977,11 +953,11 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/cloud104/uptimerobot-api/pkg/api",
     "github.com/emicklei/go-restful",
     "github.com/k0kubun/pp",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
+    "github.com/spf13/cobra",
     "golang.org/x/net/context",
     "k8s.io/api/apps/v1",
     "k8s.io/api/extensions/v1beta1",
