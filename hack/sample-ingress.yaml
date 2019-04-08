@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: uptimerobot.tks.sh 
+  annotations:
+    uptimerobot.tks.sh/watch: 'true'
+spec:
+  rules:
+  - host: uptimerobot.tks.sh
+    http:
+      paths:
+      - backend:
+          serviceName: nope 
+          servicePort: 8000
+        path: /
+status:
+  loadBalancer: {}

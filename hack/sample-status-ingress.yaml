@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  creationTimestamp: null
+  generation: 1
+  name: protheus-status-ing
+  selfLink: /apis/extensions/v1beta1/namespaces/c73564/ingresses/protheus-status-ing
+spec:
+  rules:
+  - host: healthcheck-c73564.dev-ing.smartfiscal.info
+    http:
+      paths:
+      - backend:
+          serviceName: protheus-status-svc
+          servicePort: 3000
+        path: /
+status:
+  loadBalancer: {}
