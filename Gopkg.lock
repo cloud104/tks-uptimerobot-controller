@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:39ca9d87aeb82f8a58e32b01d5c085593396c2a5fd818c8c68b958d8b0b2ba4a"
+  digest = "1:b4fe8740ce5751651cca8daa7d50d586c15e887dfb6bca5e0d648b2bd77d5fe3"
   name = "cloud.google.com/go"
   packages = ["compute/metadata"]
   pruneopts = "T"
-  revision = "458e1f376a2b44413160b5d301183b65debaa3f6"
-  version = "v0.37.2"
+  revision = "fcb9a2d5f791d07be64506ab54434de65989d370"
+  version = "v0.37.4"
 
 [[projects]]
   digest = "1:464aef731a5f82ded547c62e249a2e9ec59fbbc9ddab53cda7b9857852630a61"
@@ -118,12 +118,12 @@
   version = "v1.0.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:3ee90c0d94da31b442dde97c99635aaafec68d0b8a3c12ee2075c6bdabeec6bb"
+  digest = "1:a6181aca1fd5e27103f9a920876f29ac72854df7345a39f3b01e61c8c94cc8af"
   name = "github.com/google/gofuzz"
   packages = ["."]
   pruneopts = "T"
-  revision = "24818f796faf91cd76ec7bddd72458fbced7a6c1"
+  revision = "f140a6486e521aad38f5917de355cbf147cc0496"
+  version = "v1.0.0"
 
 [[projects]]
   digest = "1:582b704bebaa06b48c29b0cec224a6058a09c86883aaddabde889cd1a5f73e1b"
@@ -557,7 +557,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:b1ed39d97cf969ba8f0795bad01c9a4055d14cd557de884d72e86bcd6f7a859e"
+  digest = "1:6195f1ff4c03d8e9839f08be61fbb179938b8c704b5b2b4b2cd18148c30322e3"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -573,7 +573,7 @@
     "internal/semver",
   ]
   pruneopts = "T"
-  revision = "052fc3cfdbc2c9e9082b1d51f850b7974b5efb2a"
+  revision = "9e5445377b7a6defdd04a4466548322eeb7f0eff"
 
 [[projects]]
   digest = "1:0c4496c1ac6b225c699524bf78df201f895305d7f6a0fee3d8e99cb244e0474e"
@@ -814,7 +814,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:e338d2adcfcc4b90f302ab1188bf177ccefbb9434cbf55c9afc18b6999fdac71"
+  digest = "1:9f94f3f0b8c8c37ca81ca2e996877ebfa2bd33cd4c3df78139df095c16e96df6"
   name = "k8s.io/code-generator"
   packages = [
     "cmd/client-gen",
@@ -831,7 +831,7 @@
     "pkg/util",
   ]
   pruneopts = "T"
-  revision = "9a4d48088f6a660e99575c40617041aafa7e2344"
+  revision = "826a68e0d1203c132e5c01e06e271db403b08701"
 
 [[projects]]
   branch = "master"
@@ -958,15 +958,12 @@
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
     "github.com/spf13/cobra",
-    "golang.org/x/net/context",
-    "k8s.io/api/apps/v1",
     "k8s.io/api/extensions/v1beta1",
     "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1",
     "k8s.io/apimachinery/pkg/api/errors",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
     "k8s.io/apimachinery/pkg/runtime",
     "k8s.io/apimachinery/pkg/runtime/schema",
-    "k8s.io/apimachinery/pkg/types",
     "k8s.io/client-go/kubernetes/scheme",
     "k8s.io/client-go/plugin/pkg/client/auth/gcp",
     "k8s.io/client-go/rest",

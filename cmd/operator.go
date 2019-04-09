@@ -55,7 +55,6 @@ func startOperator(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 	log.Info("Operator started with options", opts)
-	pp.Println(opts)
 
 	// Get a config to talk to the apiserver
 	log.Info("setting up client for manager")
