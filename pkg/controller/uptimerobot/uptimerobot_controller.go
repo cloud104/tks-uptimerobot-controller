@@ -18,6 +18,7 @@ package uptimerobot
 import (
 	"context"
 
+	"github.com/cloud104/tks-uptimerobot-controller/cmd/options"
 	monitorsv1 "github.com/cloud104/tks-uptimerobot-controller/pkg/apis/monitors/v1"
 	"github.com/k0kubun/pp"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -83,7 +84,6 @@ type ReconcileUptimeRobot struct {
 // +kubebuilder:rbac:groups=apps,resources=deployments/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=monitors.tks.sh,resources=uptimerobots,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=monitors.tks.sh,resources=uptimerobots/status,verbs=get;update;patch
-// +kubebuilder:rbac:groups=apps,resources=secrets,verbs=get
 func (r *ReconcileUptimeRobot) Reconcile(request reconcile.Request) (reconcile.Result, error) {
 	// Fetch the UptimeRobot instance
 	instance := &monitorsv1.UptimeRobot{}
@@ -99,6 +99,7 @@ func (r *ReconcileUptimeRobot) Reconcile(request reconcile.Request) (reconcile.R
 	}
 
 	// @TODO: Invoke someone here to post to a external source that can be queryed
+	pp.Println(options.GetControllerOptions())
 	pp.Println(instance)
 
 	// @TODO: Where to put this
