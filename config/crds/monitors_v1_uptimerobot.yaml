@@ -31,16 +31,29 @@ spec:
             hosts:
               items:
                 properties:
-                  address:
+                  friendlyName:
+                    type: string
+                  type:
+                    type: string
+                  url:
                     type: string
                 required:
-                - address
+                - url
+                - friendlyName
                 type: object
               type: array
-            name:
-              type: string
+            statusPage:
+              properties:
+                friendlyName:
+                  type: string
+                url:
+                  type: string
+              required:
+              - url
+              - friendlyName
+              type: object
           required:
-          - name
+          - statusPage
           - hosts
           type: object
         status:

@@ -1,5 +1,5 @@
 # Image URL to use all building/pushing image targets
-IMG ?= cloud104/uptimerobot-controller
+IMG ?= cloud104/tks-uptimerobot-controller
 
 all: test manager
 

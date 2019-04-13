@@ -19,15 +19,26 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// UptimeRobotFinalizer ...
+const UptimeRobotFinalizer = "uptimerobot.k8s.io"
+
 // UptimeRobotSpec defines the desired state of UptimeRobot
 type UptimeRobotSpec struct {
-	Name  string             `json:"name"`
-	Hosts []UptimeRobotHosts `json:"hosts"`
+	StatusPage UptimeStatusPage   `json:"statusPage"`
+	Hosts      []UptimeRobotHosts `json:"hosts"`
+}
+
+// UptimeStatusPage ...
+type UptimeStatusPage struct {
+	URL          string `json:"url"`
+	FriendlyName string `json:"friendlyName"`
 }
 
 // UptimeRobotHosts ...
 type UptimeRobotHosts struct {
-	Address string `json:"address"`
+	URL          string `json:"url"`
+	FriendlyName string `json:"friendlyName"`
+	Type         string `json:"type,omitempty"`
 }
 
 // UptimeRobotStatus defines the observed state of UptimeRobot

@@ -6,6 +6,12 @@ metadata:
   name: uptimerobot-sample
 spec:
   # Add fields here
-  name: foo
+  statusPage:
+    friendlyName: foo
+    # @TODO: Change this
+    url: status-foo.ke04.smartfiscal.info
   hosts:
-    - address: foo.tks.sh 
+    - friendlyName: Bar
+      url: https://foo.tks.sh
+    - friendlyName: Foo
+      url: https://bar.tks.sh

@@ -96,11 +96,9 @@ func (r *ReconcileIngress) Reconcile(request reconcile.Request) (reconcile.Resul
 
 	crd := &monitorsv1.UptimeRobot{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      instance.Name,
 			Namespace: instance.Namespace,
 		},
 		Spec: monitorsv1.UptimeRobotSpec{
-			Name:  instance.Name,
 			Hosts: []monitorsv1.UptimeRobotHosts{},
 		},
 	}

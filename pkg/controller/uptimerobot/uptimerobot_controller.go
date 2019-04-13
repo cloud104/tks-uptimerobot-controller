@@ -18,11 +18,11 @@ package uptimerobot
 import (
 	"context"
 
-	"github.com/cloud104/tks-uptimerobot-controller/cmd/options"
 	monitorsv1 "github.com/cloud104/tks-uptimerobot-controller/pkg/apis/monitors/v1"
-	"github.com/k0kubun/pp"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	controllerError "sigs.k8s.io/cluster-api/pkg/controller/error"
+	"sigs.k8s.io/cluster-api/pkg/util"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
@@ -34,20 +34,15 @@ import (
 
 var log = logf.Log.WithName("controller")
 
-/**
-* USER ACTION REQUIRED: This is a scaffold file intended for the user to modify with their own Controller
-* business logic.  Delete these comments after modifying this file.*
- */
-
-// Add creates a new UptimeRobot Controller and adds it to the Manager with default RBAC. The Manager will set fields on the Controller
+// AddWithActuator creates a new UptimeRobot Controller and adds it to the Manager with default RBAC. The Manager will set fields on the Controller
 // and Start it when the Manager is Started.
-func Add(mgr manager.Manager) error {
-	return add(mgr, newReconciler(mgr))
+func AddWithActuator(mgr manager.Manager, actuator Actuator) error {
+	return add(mgr, newReconciler(mgr, actuator))
 }
 
 // newReconciler returns a new reconcile.Reconciler
-func newReconciler(mgr manager.Manager) reconcile.Reconciler {
-	return &ReconcileUptimeRobot{Client: mgr.GetClient(), scheme: mgr.GetScheme()}
+func newReconciler(mgr manager.Manager, actuator Actuator) reconcile.Reconciler {
+	return &ReconcileUptimeRobot{Client: mgr.GetClient(), scheme: mgr.GetScheme(), actuator: actuator}
 }
 
 // add adds a new Controller to mgr with r as the reconcile.Reconciler
@@ -72,7 +67,8 @@ var _ reconcile.Reconciler = &ReconcileUptimeRobot{}
 // ReconcileUptimeRobot reconciles a UptimeRobot object
 type ReconcileUptimeRobot struct {
 	client.Client
-	scheme *runtime.Scheme
+	scheme   *runtime.Scheme
+	actuator Actuator
 }
 
 // Reconcile reads that state of the cluster for a UptimeRobot object and makes changes based on the state read
@@ -98,18 +94,58 @@ func (r *ReconcileUptimeRobot) Reconcile(request reconcile.Request) (reconcile.R
 		return reconcile.Result{}, err
 	}
 
-	// @TODO: Invoke someone here to post to a external source that can be queryed
-	pp.Println(options.GetControllerOptions())
-	pp.Println(instance)
+	name := instance.Name
+	log.Info("Running reconcile Uptimerobot", "name", name)
 
-	// @TODO: Where to put this
-	// httpClient := &http.Client{}
-	// client := uptimerobot.NewClient("yourAPIKeyHere", httpClient)
-	// resp, err := client.GetMonitors()
-	// if err != nil {
-	// 	return reconcile.Result{}, err
-	// }
-	// pp.Println(resp)
+	// If object hasn't been deleted and doesn't have a finalizer, add one
+	// Add a finalizer to newly created objects.
+	if instance.ObjectMeta.DeletionTimestamp.IsZero() &&
+		!util.Contains(instance.ObjectMeta.Finalizers, monitorsv1.UptimeRobotFinalizer) {
+		instance.Finalizers = append(instance.Finalizers, monitorsv1.UptimeRobotFinalizer)
+		if err = r.Update(context.Background(), instance); err != nil {
+			log.Info("failed to add finalizer to uptimerobot", "name", name, "err", err)
+			return reconcile.Result{}, err
+		}
+
+		// Since adding the finalizer updates the object return to avoid later update issues
+		return reconcile.Result{}, nil
+	}
+
+	if !instance.ObjectMeta.DeletionTimestamp.IsZero() {
+		// no-op if finalizer has been removed.
+		if !util.Contains(instance.ObjectMeta.Finalizers, monitorsv1.UptimeRobotFinalizer) {
+			log.Info("reconciling uptimerobot object causes a no-op as there is no finalizer.", "name", name)
+			return reconcile.Result{}, nil
+		}
+
+		log.Info("reconciling uptimerobot object %v triggers delete.", "name", name)
+		if err := r.actuator.Delete(instance); err != nil {
+			log.Error(err, "Error deleting uptimerobot object", "name", name)
+			return reconcile.Result{}, err
+		}
+		// Remove finalizer on successful deletion.
+		log.Info("uptimerobot object deletion successful, removing finalizer.", "name", name)
+		instance.ObjectMeta.Finalizers = util.Filter(instance.ObjectMeta.Finalizers, monitorsv1.UptimeRobotFinalizer)
+		if err := r.Client.Update(context.Background(), instance); err != nil {
+			log.Error(err, "Error removing finalizer from uptimerobot object", "name", name)
+			return reconcile.Result{}, err
+		}
+		return reconcile.Result{}, nil
+	}
+
+	log.Info("reconciling uptimerobot object triggers idempotent reconcile.", "name", name)
+	err = r.actuator.Reconcile(instance)
+	if err != nil {
+		if requeueErr, ok := err.(*controllerError.RequeueAfterError); ok {
+			log.Info("Actuator returned requeue after error", "requeueErr", requeueErr)
+			return reconcile.Result{Requeue: true, RequeueAfter: requeueErr.RequeueAfter}, nil
+		}
+		log.Error(err, "Error reconciling uptimerobot object", "name", name)
+		return reconcile.Result{}, err
+	}
+
+	// @TODO: When a monitor is removed from the list, delete it
+	// @TODO: When a monitor is removed from the list, remove it from status page
 
 	return reconcile.Result{}, nil
 }

@@ -9,3 +9,6 @@
 
 - Figure out the the queue stuff
 - Make tests run on docker
+- Rename folder provider
+- If u remove a host from de CRD it is not deleted, and will prevent is deletion
+- Fix finalizers

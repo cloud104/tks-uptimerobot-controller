@@ -20,9 +20,10 @@ import (
 
 	"github.com/cloud104/tks-uptimerobot-controller/cmd/options"
 	"github.com/cloud104/tks-uptimerobot-controller/pkg/apis"
+	"github.com/cloud104/tks-uptimerobot-controller/pkg/client/uptimerobot/actuators/monitor"
 	"github.com/cloud104/tks-uptimerobot-controller/pkg/controller"
+	capiuptimerobot "github.com/cloud104/tks-uptimerobot-controller/pkg/controller/uptimerobot"
 	"github.com/cloud104/tks-uptimerobot-controller/pkg/webhook"
-	"github.com/k0kubun/pp"
 	"github.com/spf13/cobra"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
@@ -72,6 +73,12 @@ func startOperator(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
+	// Initialize recorder
+	recorder := mgr.GetRecorder("uptimerobot-controller")
+
+	// Initialize cluster actuator.
+	uptimeRobotActuator, _ := monitor.NewActuator(monitor.ActuatorParams{}, recorder)
+
 	log.Info("Registering Components.")
 
 	// Setup Scheme for all resources
@@ -82,7 +89,13 @@ func startOperator(cmd *cobra.Command, args []string) {
 	}
 
 	// Setup all Controllers
-	log.Info("Setting up controller")
+	log.Info("Setting up controller Uptimerobot")
+	if err := capiuptimerobot.AddWithActuator(mgr, uptimeRobotActuator); err != nil {
+		log.Error(err, "unable to register controllers to the manager")
+		os.Exit(1)
+	}
+
+	log.Info("Setting up controller the others")
 	if err := controller.AddToManager(mgr); err != nil {
 		log.Error(err, "unable to register controllers to the manager")
 		os.Exit(1)

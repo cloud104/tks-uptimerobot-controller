@@ -1,0 +1,49 @@
+workspace:
+  base: /go
+  path: src/github.com/cloud104/uppercut
+
+pipeline:
+  deps:
+    image: instrumentisto/dep:alpine
+    commands:
+      - dep ensure -vendor-only
+
+  test:
+    image: golang:alpine
+    commands:
+      - CGO_ENABLED=0 GOOS=linux go test ./...
+
+  publish-feature:
+    image: plugins/docker
+    group: "deploy"
+    repo: cloud104/${DRONE_REPO_NAME}
+    secrets: [ docker_username, docker_password ]
+    tags:
+      - "latest"
+      - ${DRONE_BRANCH/\//-}-${DRONE_BUILD_NUMBER}
+    when:
+      branch:
+        include: [ feature/*, fix/* ]
+
+  # After Tagged
+  tag:
+    image: cloud104/drone-github-tag
+    secrets: [ plugin_github_token ]
+    when:
+      branch:
+        include: [ develop ]
+
+  publish-release:
+    image: plugins/docker
+    group: "deploy"
+    repo: cloud104/${DRONE_REPO_NAME}
+    secrets: [ docker_username, docker_password ]
+    auto_tag: true
+    when:
+      event: tag
+
+  # When done
+  slack:
+    image: plugins/slack
+    username: ${DRONE_REPO_NAME}
+    secrets: [ plugin_webhook ]

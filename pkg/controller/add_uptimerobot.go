@@ -16,10 +16,19 @@ limitations under the License.
 package controller
 
 import (
+	"github.com/cloud104/tks-uptimerobot-controller/pkg/client/uptimerobot/actuators/monitor"
 	"github.com/cloud104/tks-uptimerobot-controller/pkg/controller/uptimerobot"
+	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 
 func init() {
 	// AddToManagerFuncs is a list of functions to create controllers and add them to a manager.
-	AddToManagerFuncs = append(AddToManagerFuncs, uptimerobot.Add)
+	AddToManagerFuncs = append(AddToManagerFuncs, func(m manager.Manager) error {
+		recorder := m.GetRecorder("uptimerobot-controller")
+		actuator, err := monitor.NewActuator(monitor.ActuatorParams{}, recorder)
+		if err != nil {
+			return err
+		}
+		return uptimerobot.AddWithActuator(m, actuator)
+	})
 }
