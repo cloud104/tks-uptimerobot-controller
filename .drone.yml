@@ -3,46 +3,48 @@ workspace:
   path: src/github.com/cloud104/tks-uptimerobot-controller
 
 pipeline:
-  deps:
-    image: instrumentisto/dep:alpine
-    commands:
-      - dep ensure -vendor-only
+  # deps:
+  #   image: instrumentisto/dep:alpine
+  #   commands:
+  #     - dep ensure -vendor-only
 
-  fmt:
-    image: golang:alpine
-    group: "test"
-    commands:
-      - go fmt ./pkg/... ./cmd/...
+  # fmt:
+  #   image: golang:alpine
+  #   group: "test"
+  #   commands:
+  #     - go fmt ./pkg/... ./cmd/...
 
-  vet:
-    image: golang:alpine
-    group: "test"
-    commands:
-      - go vet ./pkg/... ./cmd/...
-    environment:
-      - CGO_ENABLED=0
-      - GOOS=linux
+  # vet:
+  #   image: golang:alpine
+  #   group: "test"
+  #   commands:
+  #     - go vet ./pkg/... ./cmd/...
+  #   environment:
+  #     - CGO_ENABLED=0
+  #     - GOOS=linux
 
-  test:
-    image: golang:alpine
-    group: "test"
-    commands:
-      - apk add --no-cache curl
-      - curl -L "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v$${VERSION}/kubebuilder_$${VERSION}_darwin_$${ARCH}.tar.gz" -o kubebuilder.tar.gz
-      - tar -zxvf kubebuilder.tar.gz
-      - mv kubebuilder_$${VERSION}_darwin_$${ARCH} /usr/local/kubebuilder
-      - go test ./pkg/... ./cmd/... -coverprofile cover.out
-    environment:
-      - CGO_ENABLED=0
-      - GOOS=linux
-      - VERSION=1.0.8
-      - ARCH=amd64
+  # test:
+  #   image: golang:alpine
+  #   group: "test"
+  #   commands:
+  #     - apk add --no-cache curl
+  #     - curl -L "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v$${VERSION}/kubebuilder_$${VERSION}_darwin_$${ARCH}.tar.gz" -o kubebuilder.tar.gz
+  #     - tar -zxvf kubebuilder.tar.gz
+  #     - mv kubebuilder_$${VERSION}_darwin_$${ARCH} /usr/local/kubebuilder
+  #     # - go test ./pkg/... ./cmd/... -coverprofile cover.out
+  #   environment:
+  #     - CGO_ENABLED=0
+  #     - GOOS=linux
+  #     - VERSION=1.0.8
+  #     - ARCH=amd64
 
   publish-feature:
     image: plugins/docker
     group: "deploy"
     repo: quay.io/cloud104/${DRONE_REPO_NAME}
     secrets: [ docker_username, docker_password ]
+    environment:
+      - DOCKER_REGISTRY=quay.io
     tags:
       - "latest"
       - ${DRONE_BRANCH/\//-}-${DRONE_BUILD_NUMBER}
@@ -50,25 +52,25 @@ pipeline:
       branch:
         include: [ feature/*, fix/* ]
 
-  # After Tagged
-  tag:
-    image: cloud104/drone-github-tag
-    secrets: [ plugin_github_token ]
-    when:
-      branch:
-        include: [ develop ]
+  # # After Tagged
+  # tag:
+  #   image: cloud104/drone-github-tag
+  #   secrets: [ plugin_github_token ]
+  #   when:
+  #     branch:
+  #       include: [ develop ]
 
-  publish-release:
-    image: plugins/docker
-    group: "deploy"
-    repo: quay.io/cloud104/${DRONE_REPO_NAME}
-    secrets: [ docker_username, docker_password ]
-    auto_tag: true
-    when:
-      event: tag
+  # publish-release:
+  #   image: plugins/docker
+  #   group: "deploy"
+  #   repo: quay.io/cloud104/${DRONE_REPO_NAME}
+  #   secrets: [ docker_username, docker_password ]
+  #   auto_tag: true
+  #   when:
+  #     event: tag
 
-  # When done
-  slack:
-    image: plugins/slack
-    username: ${DRONE_REPO_NAME}
-    secrets: [ plugin_webhook ]
+  # # When done
+  # slack:
+  #   image: plugins/slack
+  #   username: ${DRONE_REPO_NAME}
+  #   secrets: [ plugin_webhook ]

@@ -1,0 +1,11 @@
+version: "3.7"
+services:
+  test:
+    image: quay.io/cloud104/tks-uptimerobot-controller
+    build:
+      context: .
+      target: dev
+    entrypoint: go test ./pkg/... ./cmd/... -coverprofile cover.out
+    working_dir: /go/src/github.com/cloud104/tks-uptimerobot-controller
+    volumes:
+      - .:/go/src/github.com/cloud104/tks-uptimerobot-controller
