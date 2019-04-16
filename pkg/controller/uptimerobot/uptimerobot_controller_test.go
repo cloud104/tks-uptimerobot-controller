@@ -20,6 +20,8 @@ import (
 	"time"
 
 	monitorsv1 "github.com/cloud104/tks-uptimerobot-controller/pkg/apis/monitors/v1"
+	mocks "github.com/cloud104/tks-uptimerobot-controller/pkg/controller/uptimerobot/mocks"
+	"github.com/golang/mock/gomock"
 	"github.com/onsi/gomega"
 	"golang.org/x/net/context"
 	appsv1 "k8s.io/api/apps/v1"
@@ -39,6 +41,11 @@ var depKey = types.NamespacedName{Name: "foo-deployment", Namespace: "default"}
 const timeout = time.Second * 5
 
 func TestReconcile(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	actuator := mocks.NewMockActuator(ctrl)
+
 	g := gomega.NewGomegaWithT(t)
 	instance := &monitorsv1.UptimeRobot{ObjectMeta: metav1.ObjectMeta{Name: "foo", Namespace: "default"}}
 
@@ -48,7 +55,7 @@ func TestReconcile(t *testing.T) {
 	g.Expect(err).NotTo(gomega.HaveOccurred())
 	c = mgr.GetClient()
 
-	recFn, requests := SetupTestReconcile(newReconciler(mgr))
+	recFn, requests := SetupTestReconcile(newReconciler(mgr, actuator))
 	g.Expect(add(mgr, recFn)).NotTo(gomega.HaveOccurred())
 
 	stopMgr, mgrStopped := StartTestManager(mgr, g)

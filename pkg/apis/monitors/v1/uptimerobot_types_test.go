@@ -35,9 +35,8 @@ func TestStorageUptimeRobot(t *testing.T) {
 			Namespace: "default",
 		},
 		Spec: UptimeRobotSpec{
-			Name: "foo",
 			Hosts: []UptimeRobotHosts{
-				UptimeRobotHosts{Address: "foo.bar.sh"},
+				UptimeRobotHosts{URL: "foo.bar.sh"},
 			},
 		},
 	}

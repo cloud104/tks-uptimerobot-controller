@@ -1,5 +1,5 @@
 # Image URL to use all building/pushing image targets
-IMG ?= cloud104/tks-uptimerobot-controller
+IMG ?= quay.io/cloud104/tks-uptimerobot-controller
 
 all: test manager
 
