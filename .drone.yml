@@ -73,4 +73,4 @@ pipeline:
   slack:
     image: plugins/slack
     username: ${DRONE_REPO_NAME}
-    secrets: [ plugin_webhook ]
+    secrets: [ slack_webhook ]
