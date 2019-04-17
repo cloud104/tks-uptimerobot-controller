@@ -9,7 +9,7 @@ spec:
   statusPage:
     friendlyName: foo
     # @TODO: Change this
-    url: status-foo.ke04.smartfiscal.info
+    url: status-foo.examples.com
   hosts:
     - friendlyName: Bar
       url: https://foo.tks.sh
