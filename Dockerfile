@@ -28,10 +28,10 @@ RUN dep ensure -v -vendor-only
 FROM dev as builder
 COPY pkg/ pkg/
 COPY cmd/ cmd/
-RUN go build -o /entrypoint github.com/cloud104/tks-uptimerobot-controller/cmd
+RUN go build -o /manager github.com/cloud104/tks-uptimerobot-controller/cmd
 
 #### Prod
 FROM drone/ca-certs
-COPY --from=builder /entrypoint /usr/local/bin/entrypoint
-EXPOSE 80
-ENTRYPOINT ["entrypoint"]
+ENV HOME=/root
+COPY --from=builder /manager /manager
+ENTRYPOINT ["/manager"]
