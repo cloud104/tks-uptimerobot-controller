@@ -30,7 +30,7 @@ func TestRencocile(t *testing.T) {
 			gomock.Eq("monitoractuator Reconcile invoked"),
 		)
 
-	actuator, err := monitoractuator.NewActuator(a, r)
+	actuator, err := monitoractuator.NewActuator(key, r)
 	assert.Nil(t, err)
 
 	// @TODO
