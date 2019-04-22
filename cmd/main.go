@@ -18,8 +18,9 @@ package main
 import (
 	"os"
 
-	"github.com/urfave/cli/altsrc"
 	cli "gopkg.in/urfave/cli.v1"
+	altsrc "gopkg.in/urfave/cli.v1/altsrc"
+	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
 
 	// @TODO: Yep, what is this?
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
@@ -30,15 +31,21 @@ var (
 )
 
 func main() {
+	// Start logger
+	logf.SetLogger(logf.ZapLogger(false))
+	log := logf.Log.WithName("cli")
+
 	app := cli.NewApp()
 	app.Action = run
-	app.Name = "UptimeRobot Operator"
 	app.Version = version
 	flags := createFlags()
 	app.Before = altsrc.InitInputSourceWithContext(flags, altsrc.NewYamlSourceFromFlagFunc("config"))
 	app.Flags = flags
 
-	app.Run(os.Args)
+	err := app.Run(os.Args)
+	if err != nil {
+		log.Error(err, "cli boot failed")
+	}
 }
 
 func run(c *cli.Context) {
@@ -46,7 +53,6 @@ func run(c *cli.Context) {
 		UptimeRobotKey: c.String("uptimerobot-api-key"),
 		MetricsAddr:    c.String("metrics-addr"),
 	}
-
 	op.Exec()
 }
 
@@ -55,6 +61,7 @@ func createFlags() []cli.Flag {
 		cli.StringFlag{
 			Name:  "config, c",
 			Usage: "Load configuration from `FILE`",
+			Value: os.Getenv("HOME") + "/config.yaml",
 		},
 		altsrc.NewStringFlag(
 			cli.StringFlag{
