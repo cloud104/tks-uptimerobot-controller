@@ -6,9 +6,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/k0kubun/pp"
-
-	"github.com/cloud104/tks-uptimerobot-controller/cmd/options"
 	monitorv1 "github.com/cloud104/tks-uptimerobot-controller/pkg/apis/monitors/v1"
 	uptimerobot "github.com/cloud104/uptimerobot-api/pkg/api"
 	corev1 "k8s.io/api/core/v1"
@@ -21,16 +18,14 @@ var log = logf.Log.WithName("monitor-actuator")
 // Actuator ...
 type Actuator struct {
 	recorder record.EventRecorder
-}
-
-// ActuatorParams holds parameter information for Actuator
-type ActuatorParams struct {
+	apiKey   string
 }
 
 // NewActuator creates a new uptime robot actuator
-func NewActuator(params ActuatorParams, recorder record.EventRecorder) (*Actuator, error) {
+func NewActuator(apiKey string, recorder record.EventRecorder) (*Actuator, error) {
 	return &Actuator{
 		recorder: recorder,
+		apiKey:   apiKey,
 	}, nil
 }
 
@@ -40,7 +35,7 @@ func (a *Actuator) Reconcile(monitor *monitorv1.UptimeRobot) error {
 	a.recorder.Event(monitor, corev1.EventTypeWarning, "tks-uptimerobot", "monitoractuator Reconcile invoked")
 
 	for _, h := range monitor.Spec.Hosts {
-		err := reconcile(&h, monitor)
+		err := reconcile(&h, monitor, a.apiKey)
 		if err != nil {
 			return err
 		}
@@ -49,13 +44,10 @@ func (a *Actuator) Reconcile(monitor *monitorv1.UptimeRobot) error {
 	return nil
 }
 
-func reconcile(host *monitorv1.UptimeRobotHosts, monitor *monitorv1.UptimeRobot) (err error) {
-	// Get api key @TODO: Move this out
-	key := options.GetControllerOptions().UptimeRobotKey
-
+func reconcile(host *monitorv1.UptimeRobotHosts, monitor *monitorv1.UptimeRobot, apiKey string) (err error) {
 	// @TODO: Where to put this
 	// Make client
-	uptimerobotClient := uptimerobot.NewClient(key, &http.Client{})
+	uptimerobotClient := uptimerobot.NewClient(apiKey, &http.Client{})
 
 	// Create Params
 	params := url.Values{}
@@ -101,7 +93,7 @@ func reconcile(host *monitorv1.UptimeRobotHosts, monitor *monitorv1.UptimeRobot)
 	resp = r.Content().(uptimerobot.UptimeRobotResponse)
 	log.Info("reconciliation done", "resp", resp)
 
-	err = reconcileStatusPage(key, strconv.Itoa(resp.Monitor.Id), monitor)
+	err = reconcileStatusPage(apiKey, strconv.Itoa(resp.Monitor.Id), monitor)
 	if err != nil {
 		log.Error(err, "reconciliation status page failed")
 		return
@@ -111,17 +103,14 @@ func reconcile(host *monitorv1.UptimeRobotHosts, monitor *monitorv1.UptimeRobot)
 	return
 }
 
-func reconcileStatusPage(key string, monitorID string, monitor *monitorv1.UptimeRobot) (err error) {
-	uptimerobotClient := uptimerobot.NewClient(key, &http.Client{})
+func reconcileStatusPage(apiKey string, monitorID string, monitor *monitorv1.UptimeRobot) (err error) {
+	uptimerobotClient := uptimerobot.NewClient(apiKey, &http.Client{})
 
 	// Search for a existing page
 	statusPage, err := uptimerobotClient.SearchStatusPage(monitor.Spec.StatusPage.FriendlyName)
 	if err != nil {
 		return
 	}
-
-	a, _ := uptimerobotClient.GetPublicStatusPages(url.Values{})
-	pp.Println(a)
 
 	// Build list of monitor ids exitent + new
 	var monitorIds []string
@@ -157,7 +146,7 @@ func (a *Actuator) Delete(monitor *monitorv1.UptimeRobot) error {
 	a.recorder.Event(monitor, corev1.EventTypeWarning, "tks-uptimerobot", "monitoractuator Delete invoked")
 
 	for _, h := range monitor.Spec.Hosts {
-		err := delete(&h, monitor)
+		err := delete(&h, monitor, a.apiKey)
 		if err != nil {
 			return err
 		}
@@ -165,13 +154,10 @@ func (a *Actuator) Delete(monitor *monitorv1.UptimeRobot) error {
 	return nil
 }
 
-func delete(host *monitorv1.UptimeRobotHosts, monitor *monitorv1.UptimeRobot) (err error) {
-	// Get api key @TODO: Move this out
-	key := options.GetControllerOptions().UptimeRobotKey
-
+func delete(host *monitorv1.UptimeRobotHosts, monitor *monitorv1.UptimeRobot, apiKey string) (err error) {
 	// @TODO: Where to put this
 	// Make client
-	uptimerobotClient := uptimerobot.NewClient(key, &http.Client{})
+	uptimerobotClient := uptimerobot.NewClient(apiKey, &http.Client{})
 
 	// Create Search Params
 	params := url.Values{}
@@ -207,7 +193,7 @@ func delete(host *monitorv1.UptimeRobotHosts, monitor *monitorv1.UptimeRobot) (e
 	}
 
 	// Delete status page
-	err = deleteStatusPage(key, strconv.Itoa(m.Id), monitor)
+	err = deleteStatusPage(apiKey, strconv.Itoa(m.Id), monitor)
 	if err != nil {
 		log.Error(err, "status page deletion failed")
 		return
@@ -217,8 +203,8 @@ func delete(host *monitorv1.UptimeRobotHosts, monitor *monitorv1.UptimeRobot) (e
 	return
 }
 
-func deleteStatusPage(key string, monitorID string, monitor *monitorv1.UptimeRobot) (err error) {
-	uptimerobotClient := uptimerobot.NewClient(key, &http.Client{})
+func deleteStatusPage(apiKey string, monitorID string, monitor *monitorv1.UptimeRobot) (err error) {
+	uptimerobotClient := uptimerobot.NewClient(apiKey, &http.Client{})
 
 	// Search for a existing page
 	statusPage, err := uptimerobotClient.SearchStatusPage(monitor.Spec.StatusPage.FriendlyName)
