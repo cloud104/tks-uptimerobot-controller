@@ -16,7 +16,7 @@ func TestRencocile(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	a := monitoractuator.ActuatorParams{}
+	key := ""
 	r := mocks.NewMockEventRecorder(ctrl)
 
 	// Stubs
