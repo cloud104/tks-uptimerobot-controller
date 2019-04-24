@@ -70,7 +70,7 @@ pipeline:
       event: tag
 
   # When done
-  slack:
-    image: plugins/slack
-    username: ${DRONE_REPO_NAME}
-    secrets: [ slack_webhook ]
+  # slack:
+  #   image: plugins/slack
+  #   username: ${DRONE_REPO_NAME}
+  #   secrets: [ slack_webhook ]
