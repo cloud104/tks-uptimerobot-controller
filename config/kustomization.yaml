@@ -47,3 +47,8 @@ vars:
     kind: Secret
     name: webhook-server-secret
     apiVersion: v1
+- name: CONTROLLER_SECRET_NAME
+  objref:
+    kind: Secret
+    name: secret
+    apiVersion: v1

@@ -41,12 +41,26 @@ spec:
         control-plane: controller-manager
         controller-tools.k8s.io: "1.0"
     spec:
+      # initContainers:
+      # - name: vault-authenticator
+      #   image: sethvargo/vault-kubernetes-authenticator:0.2.0
+      #   imagePullPolicy: Always
+      #   volumeMounts:
+      #   - name: vault-auth
+      #     mountPath: /var/run/secrets/vaultproject.io
+      #   env:
+      #   - name: VAULT_ADDR
+      #     value: "https://vault.us-east1.gcp.tks.sh"
+      #   - name: VAULT_ROLE
+      #     value: myapp-role
+      #   securityContext:
+      #     allowPrivilegeEscalation: false
       containers:
-      - command:
+      - name: manager
+        command:
         - /manager
         image: controller:latest
         imagePullPolicy: Always
-        name: manager
         env:
           - name: POD_NAMESPACE
             valueFrom:
@@ -54,6 +68,8 @@ spec:
                 fieldPath: metadata.namespace
           - name: SECRET_NAME
             value: $(WEBHOOK_SECRET_NAME)
+          - name: HOME
+            value: /home/vault
         resources:
           limits:
             cpu: 100m
@@ -66,18 +82,43 @@ spec:
           name: webhook-server
           protocol: TCP
         volumeMounts:
-        - mountPath: /tmp/cert
-          name: cert
+        - name: cert
+          mountPath: /tmp/cert
           readOnly: true
+        - name: secret
+          mountPath: /home/vault
+          readOnly: true
+        # - name: vault-auth
+        #   mountPath: /home/vault
+        # - name: vault-secrets
+        #   mountPath: /var/run/secrets/vaultproject.io
       terminationGracePeriodSeconds: 10
       volumes:
       - name: cert
         secret:
           defaultMode: 420
           secretName: webhook-server-secret
+      - name: vault-auth
+        emptyDir:
+          medium: Memory
+      - name: vault-secrets
+        emptyDir:
+          medium: Memory
+      - name: secret
+        secret:
+          secretName: secret
 ---
 apiVersion: v1
 kind: Secret
 metadata:
   name: webhook-server-secret
   namespace: system
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: secret
+stringData:
+  config.yaml: |-
+    uptimerobot-api-key: MTIzCg==
