@@ -114,6 +114,7 @@ metadata:
   name: webhook-server-secret
   namespace: system
 ---
+# k -n tks-uptimerobot-controller-system get secret tks-uptimerobot-controller-secret -o jsonpath="{.data.config\.yaml}" | base64 -d
 apiVersion: v1
 kind: Secret
 type: Opaque
