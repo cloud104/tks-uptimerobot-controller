@@ -31,7 +31,9 @@ COPY cmd/ cmd/
 RUN go build -o /manager github.com/cloud104/tks-uptimerobot-controller/cmd
 
 #### Prod
-FROM drone/ca-certs
+#FROM drone/ca-certs
+FROM alpine
+RUN apk add -U --no-cache ca-certificates
 ENV HOME=/root
 COPY --from=builder /manager /manager
 ENTRYPOINT ["/manager"]
