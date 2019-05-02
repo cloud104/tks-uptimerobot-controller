@@ -71,13 +71,8 @@ type ReconcileUptimeRobot struct {
 	actuator Actuator
 }
 
-// Reconcile reads that state of the cluster for a UptimeRobot object and makes changes based on the state read
-// and what is in the UptimeRobot.Spec
-// TODO(user): Modify this Reconcile function to implement your Controller logic.  The scaffolding writes
-// a Deployment as an example
+// Reconcile reads that state of the cluster for a UptimeRobot object and makes changes based on the state
 // Automatically generate RBAC rules to allow the Controller to read and write Deployments
-// +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=apps,resources=deployments/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=monitors.tks.sh,resources=uptimerobots,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=monitors.tks.sh,resources=uptimerobots/status,verbs=get;update;patch
 func (r *ReconcileUptimeRobot) Reconcile(request reconcile.Request) (reconcile.Result, error) {
