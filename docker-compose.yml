@@ -1,7 +1,23 @@
 version: "3.7"
 services:
   test:
-    image: cloud104/tks-uptimerobot-controller
+    image: quay.io/cloud104/tks-uptimerobot-controller
     build:
       context: .
-    command: go test
+      target: dev
+    entrypoint: go test ./pkg/... ./cmd/... -coverprofile cover.out
+    working_dir: /go/src/github.com/cloud104/tks-uptimerobot-controller
+    volumes:
+      - .:/go/src/github.com/cloud104/tks-uptimerobot-controller
+  vault:
+    image: vault
+    ports:
+      - 8200:8200
+    volumes:
+      - vault:/vault/file
+    environment:
+      - VAULT_DEV_ROOT_TOKEN_ID=tks
+    cap_add:
+      - IPC_LOCK
+volumes:
+  vault: {}

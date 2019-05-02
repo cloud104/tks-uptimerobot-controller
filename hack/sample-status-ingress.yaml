@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: foo-status-ing
+spec:
+  rules:
+  - host: healthcheck-foo.sample.examples.com
+    http:
+      paths:
+      - backend:
+          serviceName: foo-status-svc
+          servicePort: 3000
+        path: /
+status:
+  loadBalancer: {}

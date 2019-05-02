@@ -1,0 +1,125 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    control-plane: controller-manager
+    controller-tools.k8s.io: "1.0"
+  name: system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: controller-manager-service
+  namespace: system
+  labels:
+    control-plane: controller-manager
+    controller-tools.k8s.io: "1.0"
+spec:
+  selector:
+    control-plane: controller-manager
+    controller-tools.k8s.io: "1.0"
+  ports:
+  - port: 443
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: controller-manager
+  namespace: system
+  labels:
+    control-plane: controller-manager
+    controller-tools.k8s.io: "1.0"
+spec:
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+      controller-tools.k8s.io: "1.0"
+  serviceName: controller-manager-service
+  template:
+    metadata:
+      labels:
+        control-plane: controller-manager
+        controller-tools.k8s.io: "1.0"
+    spec:
+      # initContainers:
+      # - name: vault-authenticator
+      #   image: sethvargo/vault-kubernetes-authenticator:0.2.0
+      #   imagePullPolicy: Always
+      #   volumeMounts:
+      #   - name: vault-auth
+      #     mountPath: /var/run/secrets/vaultproject.io
+      #   env:
+      #   - name: VAULT_ADDR
+      #     value: "https://vault.us-east1.gcp.tks.sh"
+      #   - name: VAULT_ROLE
+      #     value: myapp-role
+      #   securityContext:
+      #     allowPrivilegeEscalation: false
+      containers:
+      - name: manager
+        command:
+        - /manager
+        image: controller:latest
+        imagePullPolicy: Always
+        env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: SECRET_NAME
+            value: $(WEBHOOK_SECRET_NAME)
+          - name: HOME
+            value: /home/vault
+        resources:
+          limits:
+            cpu: 100m
+            memory: 30Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
+        ports:
+        - containerPort: 9876
+          name: webhook-server
+          protocol: TCP
+        volumeMounts:
+        - name: cert
+          mountPath: /tmp/cert
+          readOnly: true
+        - name: secret
+          mountPath: /home/vault
+          readOnly: true
+        # - name: vault-auth
+        #   mountPath: /home/vault
+        # - name: vault-secrets
+        #   mountPath: /var/run/secrets/vaultproject.io
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: webhook-server-secret
+      - name: vault-auth
+        emptyDir:
+          medium: Memory
+      - name: vault-secrets
+        emptyDir:
+          medium: Memory
+      - name: secret
+        secret:
+          secretName: secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: webhook-server-secret
+  namespace: system
+---
+# k -n tks-uptimerobot-controller-system get secret tks-uptimerobot-controller-secret -o jsonpath="{.data.config\.yaml}" | base64 -d
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: secret
+stringData:
+  config.yaml: |-
+    uptimerobot-api-key: @todo 

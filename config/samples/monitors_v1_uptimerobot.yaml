@@ -1,0 +1,17 @@
+apiVersion: monitors.tks.sh/v1
+kind: UptimeRobot
+metadata:
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: uptimerobot-sample
+spec:
+  # Add fields here
+  statusPage:
+    friendlyName: foo
+    # @TODO: Change this
+    url: status-foo.examples.com
+  hosts:
+    - friendlyName: Bar
+      url: https://foo.tks.sh
+    - friendlyName: Foo
+      url: https://bar.tks.sh
