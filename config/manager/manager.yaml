@@ -122,4 +122,4 @@ metadata:
   name: secret
 stringData:
   config.yaml: |-
-    uptimerobot-api-key: MTIzCg==
+    uptimerobot-api-key: @todo 

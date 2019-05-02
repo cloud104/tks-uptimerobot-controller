@@ -2,7 +2,19 @@
 ## [Unreleased]
 
 ### Chore
+- Add a more clear placeholder
+- Update readme
 - Tests
+
+### Feature
+- Remove rbac deployment permissions
+- Add todo
+- Add comment to validate key set
+- Skip slack for now
+- Use scratch image on Dockerfile
+- Add vault to docker compose
+- Use secret for uptimerobot secret key
+- Use alpine as dokerfile base for testing
 
 
 <a name="0.0.0"></a>
