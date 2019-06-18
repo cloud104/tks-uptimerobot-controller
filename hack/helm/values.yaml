@@ -1,2 +1,6 @@
 secrets:
   apiKey: "@TODO"
+
+image:
+  registry: quay.io/cloud104
+  repository: tks-uptimerobot-controller
