@@ -69,8 +69,13 @@ pipeline:
     when:
       event: tag
 
-  # When done
-  # slack:
-  #   image: plugins/slack
-  #   username: ${DRONE_REPO_NAME}
-  #   secrets: [ slack_webhook ]
+  chart:
+    image: cloud104/drone-chartmuseum
+    group: deploy
+    chart_path: hack/helm
+    secrets: [ plugin_repo_username, plugin_repo_password, plugin_repo_url ]
+
+  slack:
+    image: plugins/slack
+    username: ${DRONE_REPO_NAME}
+    secrets: [ plugin_webhook ]

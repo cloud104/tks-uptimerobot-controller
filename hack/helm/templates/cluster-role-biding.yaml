@@ -1,0 +1,27 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  creationTimestamp: null
+  name: tks-uptimerobot-controller-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tks-uptimerobot-controller-manager-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: tks-uptimerobot-controller-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tks-uptimerobot-controller-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tks-uptimerobot-controller-proxy-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: tks-uptimerobot-controller-system
