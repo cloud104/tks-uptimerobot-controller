@@ -10,7 +10,7 @@ metadata:
     control-plane: controller-manager
     controller-tools.k8s.io: "1.0"
   name: tks-uptimerobot-controller-controller-manager-metrics-service
-  namespace: tks-uptimerobot-controller-system
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - name: https
@@ -27,7 +27,7 @@ metadata:
     control-plane: controller-manager
     controller-tools.k8s.io: "1.0"
   name: tks-uptimerobot-controller-controller-manager-service
-  namespace: tks-uptimerobot-controller-system
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - port: 443
