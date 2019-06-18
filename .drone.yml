@@ -60,11 +60,13 @@ pipeline:
       branch:
         include: [ develop ]
 
-  publish-release:
+  publish:
     image: plugins/docker
     group: deploy
     repo: quay.io/cloud104/${DRONE_REPO_NAME}
     secrets: [ docker_username, docker_password ]
+    environment:
+      - DOCKER_REGISTRY=quay.io
     auto_tag: true
     when:
       event: tag
