@@ -1,7 +1,6 @@
 secrets:
   apiKey: "@TODO"
 
-# image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.version }}"
 image:
   registry: quay.io/cloud104
   repository: tks-uptimerobot-controller
