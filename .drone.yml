@@ -77,8 +77,3 @@ pipeline:
     debug: true
     chart_path: hack/helm
     secrets: [ plugin_repo_username, plugin_repo_password, plugin_repo_url ]
-
-  slack:
-    image: plugins/slack
-    username: ${DRONE_REPO_NAME}
-    secrets: [ plugin_webhook ]
