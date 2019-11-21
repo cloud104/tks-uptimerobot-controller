@@ -4,3 +4,11 @@ secrets:
 image:
   registry: quay.io/cloud104
   repository: tks-uptimerobot-controller
+
+resources:
+  requests:
+    memory: "40Mi"
+    cpu: "100m"
+  limits:
+    memory: "128Mi"
+    cpu: "100m"
