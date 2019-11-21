@@ -5,7 +5,7 @@ metadata:
     control-plane: controller-manager
     controller-tools.k8s.io: "1.0"
   name: tks-uptimerobot-controller-controller-manager
-  namespace: tks-uptimerobot-controller-system
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:
@@ -44,7 +44,7 @@ spec:
           value: tks-uptimerobot-controller-webhook-server-secret
         - name: HOME
           value: /home/vault
-        image: quay.io/cloud104/tks-uptimerobot-controller:feature-refactor-54
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.version }}"
         imagePullPolicy: Always
         name: manager
         ports:
@@ -55,12 +55,7 @@ spec:
           name: webhook-server
           protocol: TCP
         resources:
-          limits:
-            cpu: 100m
-            memory: 30Mi
-          requests:
-            cpu: 100m
-            memory: 20Mi
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - mountPath: /tmp/cert
           name: cert
