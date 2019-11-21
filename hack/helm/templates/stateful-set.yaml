@@ -55,12 +55,7 @@ spec:
           name: webhook-server
           protocol: TCP
         resources:
-          limits:
-            cpu: 100m
-            memory: 30Mi
-          requests:
-            cpu: 100m
-            memory: 20Mi
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - mountPath: /tmp/cert
           name: cert
