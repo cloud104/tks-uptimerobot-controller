@@ -15,3 +15,10 @@ spec:
       url: https://foo.tks.sh
     - friendlyName: Foo
       url: https://bar.tks.sh
+  alertContact:
+    - id: 1234567
+      threshold: 3
+      recurrence: 1
+    - id: 7654321
+      threshold: 1
+      recurrence: 1
