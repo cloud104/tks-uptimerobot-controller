@@ -28,7 +28,7 @@ spec:
           type: object
         spec:
           properties:
-            alertContact:
+            alertContacts:
               items:
                 properties:
                   id:
@@ -70,7 +70,7 @@ spec:
           required:
           - statusPage
           - hosts
-          - alertContact
+          - alertContacts
           type: object
         status:
           properties:

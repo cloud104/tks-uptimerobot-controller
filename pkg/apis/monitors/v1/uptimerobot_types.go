@@ -26,7 +26,7 @@ const UptimeRobotFinalizer = "uptimerobot.k8s.io"
 type UptimeRobotSpec struct {
 	StatusPage    UptimeStatusPage   `json:"statusPage"`
 	Hosts         []UptimeRobotHosts `json:"hosts"`
-	AlertContacts []AlertContacts    `json:"alertContact"`
+	AlertContacts []AlertContacts    `json:"alertContacts"`
 }
 
 // UptimeStatusPage ...
