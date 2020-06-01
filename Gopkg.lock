@@ -246,36 +246,12 @@
   version = "v1.1.6"
 
 [[projects]]
-  digest = "1:86c75d55fde56a814f69515d092963634d6f5f6bc1c3e9091b01fbe373a9546e"
-  name = "github.com/k0kubun/pp"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "3d73dea227e0711e38b911ffa6fbafc8ff6b2991"
-  version = "v3.0.1"
-
-[[projects]]
   digest = "1:3804a3a02964db8e6db3e5e7960ac1c1a9b12835642dd4f4ac4e56c749ec73eb"
   name = "github.com/markbates/inflect"
   packages = ["."]
   pruneopts = "T"
   revision = "24b83195037b3bc61fcda2d28b7b0518bce293b6"
   version = "v1.0.4"
-
-[[projects]]
-  digest = "1:8b841c5eeb0db3748e16fef3e167073dd5433daac53d9da2201c997eea46e83e"
-  name = "github.com/mattn/go-colorable"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "3a70a971f94a22f2fa562ffcc7a0eb45f5daf045"
-  version = "v0.1.1"
-
-[[projects]]
-  digest = "1:e150b5fafbd7607e2d638e4e5cf43aa4100124e5593385147b0a74e2733d8b0d"
-  name = "github.com/mattn/go-isatty"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "c2a7a6ca930a4cd0bc33a3f298eb71960732a3a7"
-  version = "v0.0.7"
 
 [[projects]]
   digest = "1:a8e3d14801bed585908d130ebfc3b925ba642208e6f30d879437ddfc7bb9b413"
@@ -1037,7 +1013,6 @@
     "github.com/cloud104/uptimerobot-api/pkg/api",
     "github.com/emicklei/go-restful",
     "github.com/golang/mock/gomock",
-    "github.com/k0kubun/pp",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
     "github.com/stretchr/testify/assert",

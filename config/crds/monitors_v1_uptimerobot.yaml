@@ -28,6 +28,21 @@ spec:
           type: object
         spec:
           properties:
+            alertContact:
+              items:
+                properties:
+                  id:
+                    type: string
+                  recurrence:
+                    type: string
+                  threshold:
+                    type: string
+                required:
+                - id
+                - threshold
+                - recurrence
+                type: object
+              type: array
             hosts:
               items:
                 properties:
@@ -55,6 +70,7 @@ spec:
           required:
           - statusPage
           - hosts
+          - alertContact
           type: object
         status:
           properties:
