@@ -72,12 +72,14 @@ func reconcile(host *monitorv1.UptimeRobotHosts, monitor *monitorv1.UptimeRobot,
 	params.Set("type", "1")
 
 	//Setting AlertContacts
+	//TODO TEST: https://play.golang.org/p/scrV3OHtNXd
 	var alertContacts []string
 	for _, c := range monitor.Spec.AlertContacts {
 		alertContacts = append(alertContacts, strings.Join([]string{c.ID, c.Threshold, c.Recurrence}, "_"))
 	}
-	params.Set("alert_contacts", strings.Join(alertContacts, "-"))
-	//TODO test https://play.golang.org/p/wzLOp-8s6vL
+	if len(alertContacts) > 0 {
+		params.Set("alert_contacts", strings.Join(alertContacts, "-"))
+	}
 
 	// Reconcile
 	// Oh god this piece of code
