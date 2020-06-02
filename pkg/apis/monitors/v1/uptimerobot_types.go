@@ -24,8 +24,9 @@ const UptimeRobotFinalizer = "uptimerobot.k8s.io"
 
 // UptimeRobotSpec defines the desired state of UptimeRobot
 type UptimeRobotSpec struct {
-	StatusPage UptimeStatusPage   `json:"statusPage"`
-	Hosts      []UptimeRobotHosts `json:"hosts"`
+	StatusPage    UptimeStatusPage   `json:"statusPage"`
+	Hosts         []UptimeRobotHosts `json:"hosts"`
+	AlertContacts []AlertContacts    `json:"alertContacts"`
 }
 
 // UptimeStatusPage ...
@@ -39,6 +40,13 @@ type UptimeRobotHosts struct {
 	URL          string `json:"url"`
 	FriendlyName string `json:"friendlyName"`
 	Type         string `json:"type,omitempty"`
+}
+
+// AlertContact ...
+type AlertContacts struct {
+	ID         string `json:"id"`
+	Threshold  string `json:"threshold"`
+	Recurrence string `json:"recurrence"`
 }
 
 // UptimeRobotStatus defines the observed state of UptimeRobot

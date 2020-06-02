@@ -65,11 +65,21 @@ func reconcile(host *monitorv1.UptimeRobotHosts, monitor *monitorv1.UptimeRobot,
 
 	// Set values to create or update
 	params = url.Values{}
-	// @TODO: REmove url to se a bad formated error
+	// @TODO: Remove url to se a bad formated error
 	params.Set("url", host.URL)
 	params.Set("friendly_name", host.FriendlyName)
 	// @TODO: Do something for type
 	params.Set("type", "1")
+
+	//Setting AlertContacts
+	//TODO TEST: https://play.golang.org/p/scrV3OHtNXd
+	var alertContacts []string
+	for _, c := range monitor.Spec.AlertContacts {
+		alertContacts = append(alertContacts, strings.Join([]string{c.ID, c.Threshold, c.Recurrence}, "_"))
+	}
+	if len(alertContacts) > 0 {
+		params.Set("alert_contacts", strings.Join(alertContacts, "-"))
+	}
 
 	// Reconcile
 	// Oh god this piece of code
